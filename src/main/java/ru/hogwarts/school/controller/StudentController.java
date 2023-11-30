@@ -23,8 +23,8 @@ public class StudentController {
         }
         return ResponseEntity.ok(studentService.findStudent(id));
     }
-    @GetMapping("age{age}")
-    public Collection<Student> getStudentsByAge(@PathVariable Integer age) {
+    @GetMapping(params = "age")
+    public Collection<Student> getStudentsByAge(@RequestParam Integer age) {
        return studentService.filterByAge(age);
     }
 

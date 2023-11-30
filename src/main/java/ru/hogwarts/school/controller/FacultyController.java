@@ -51,8 +51,8 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.removeFaculty(id));
     }
 
-    @GetMapping("color")
-    public Collection<Faculty> getFacultyByColor(@RequestParam("color") String color) {
+    @GetMapping(params = "color")
+    public Collection<Faculty> getFacultyByColor(@RequestParam String color) {
         return facultyService.filterByColor(color);
     }
 }

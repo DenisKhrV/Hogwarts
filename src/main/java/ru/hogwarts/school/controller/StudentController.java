@@ -49,9 +49,7 @@ public class StudentController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Student> removeStudent(@PathVariable Long id) {
-        if (studentService.findStudent(id) == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(studentService.removeStudent(id));
+        studentService.removeStudent(id);
+        return ResponseEntity.ok().build();
     }
 }

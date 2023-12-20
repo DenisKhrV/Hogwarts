@@ -25,8 +25,11 @@ public class FacultyController {
     }
 
     @GetMapping
-    public Collection<Faculty> getFacultiesAll() {
-        return facultyService.getAll();
+    public ResponseEntity getFaculties(@RequestParam(required = false) String nameOrColor) {
+        if (nameOrColor != null && !nameOrColor.isBlank()) {
+            return ResponseEntity.ok(facultyService.findByNameOrColor(nameOrColor));
+        }
+        return ResponseEntity.ok(facultyService.getAll());
     }
 
     @PostMapping
@@ -50,7 +53,7 @@ public class FacultyController {
     }
 
     @GetMapping(params = "color")
-    public Collection<Faculty> getFacultyByColor(@RequestParam String color) {
+    public Collection<Faculty> getFacultyByColor(@RequestParam(required = false) String color) {
         return facultyService.filterByColor(color);
     }
 }

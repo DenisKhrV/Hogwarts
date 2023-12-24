@@ -40,11 +40,11 @@ public class FacultyController {
 
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty foundFaculty = facultyService.editFaculty(faculty);
+        Faculty foundFaculty = facultyService.findFaculty(faculty.getId());
         if (foundFaculty == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(foundFaculty);
+        return ResponseEntity.ok(facultyService.editFaculty(faculty));
     }
 
     @DeleteMapping("{id}")
@@ -58,8 +58,11 @@ public class FacultyController {
         return facultyService.filterByColor(color);
     }
 
-    @GetMapping(params = "name")
-    public Collection<Student> getStudentOfFaculty(@RequestParam(required = false) String name) {
-        return facultyService.getStudentsOfFaculty(name);
+    @GetMapping("students")
+    public ResponseEntity<Collection<Student>> getStudentsOfFaculty(@RequestParam(required = false) String facultyName) {
+        if (facultyService.getStudentsOfFaculty(facultyName) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(facultyService.getStudentsOfFaculty(facultyName));
     }
 }

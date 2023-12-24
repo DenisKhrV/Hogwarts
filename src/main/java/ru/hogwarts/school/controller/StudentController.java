@@ -40,9 +40,12 @@ public class StudentController {
         return studentService.findByAgeBetween(min, max);
     }
 
-    @GetMapping("SF")
-    public Faculty getStudentFaculty(@RequestParam(required = false) String name) {
-        return studentService.getStudentFaculty(name);
+    @GetMapping("faculty")
+    public ResponseEntity<Faculty> getStudentFaculty(@RequestParam(required = false) String name) {
+        if (studentService.getStudentFaculty(name) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(studentService.getStudentFaculty(name));
     }
 
     @PostMapping
@@ -52,11 +55,11 @@ public class StudentController {
 
     @PutMapping
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student foundStudent = studentService.editStudent(student);
+        Student foundStudent = studentService.findStudent(student.getId());
         if (foundStudent == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(foundStudent);
+        return ResponseEntity.ok(studentService.editStudent(student));
     }
 
     @DeleteMapping("{id}")

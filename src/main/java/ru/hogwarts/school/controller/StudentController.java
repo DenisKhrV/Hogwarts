@@ -40,10 +40,10 @@ public class StudentController {
         return studentService.findByAgeBetween(min, max);
     }
 
-//    @GetMapping("SF")
-//    public Faculty getStudentFaculty(String name) {
-//        return studentService.getStudentFaculty(name);
-//    }
+    @GetMapping("SF")
+    public Faculty getStudentFaculty(@RequestParam(required = false) String name) {
+        return studentService.getStudentFaculty(name);
+    }
 
     @PostMapping
     public Student addStudent(@RequestBody Student student) {

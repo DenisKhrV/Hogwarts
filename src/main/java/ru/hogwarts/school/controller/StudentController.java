@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.dto.StudentDTO;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
@@ -49,8 +50,8 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public Student addStudent(@RequestBody StudentDTO student) {
+        return studentService.createStudent(student.getName(), student.getAge());
     }
 
     @PutMapping
@@ -59,7 +60,7 @@ public class StudentController {
         if (foundStudent == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.editStudent(student));
+        return ResponseEntity.ok(studentService.editStudent(student.getId(), student.getName(), student.getAge(), student.getFaculty()));
     }
 
     @DeleteMapping("{id}")

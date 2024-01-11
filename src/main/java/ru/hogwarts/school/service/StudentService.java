@@ -18,16 +18,24 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
+    public Student createStudent(String name, Integer age) {
+        Student newStudent = new Student();
+        newStudent.setName(name);
+        newStudent.setAge(age);
+        studentRepository.save(newStudent);
+        return newStudent;
     }
 
     public Student findStudent(long id) {
         return studentRepository.findById(id).orElse(null);
     }
 
-    public Student editStudent(Student student) {
-        return studentRepository.save(student);
+    public Student editStudent(Long id, String name, Integer age, Faculty faculty) {
+        Student studentForEdit = findStudent(id);
+        studentForEdit.setName(name);
+        studentForEdit.setAge(age);
+        studentForEdit.setFaculty(faculty);
+        return studentRepository.save(studentForEdit);
     }
 
     public void removeStudent(long id) {

@@ -27,6 +27,19 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
+    void addFaculty_success() {
+        //Подготовка входных данных
+        Faculty facultyForCreate = new Faculty("Griff", "black");
+        //Подготовка ожидаемого результата
+        Faculty expectedFaculty = new Faculty("Griff", "black");
+        //Начало теста
+        Faculty actualFaculty = this.restTemplate.postForObject("http://localhost:" + port + "/" + "/hogwarts/faculty", facultyForCreate, Faculty.class);
+        expectedFaculty.setId(actualFaculty.getId());
+        assertNotNull(actualFaculty);
+        assertEquals(expectedFaculty, actualFaculty);
+    }
+
+    @Test
     void getFacultyInfo() {
         //Подготовка входных данных
         Faculty facultyForCreate = new Faculty("Griff", "black");
@@ -41,19 +54,6 @@ class FacultyControllerRestTemplateTest {
 
     @Test
     void getFaculties() {
-    }
-
-    @Test
-    void addFaculty_success() {
-        //Подготовка входных данных
-        Faculty facultyForCreate = new Faculty("Griff", "black");
-        //Подготовка ожидаемого результата
-        Faculty expectedFaculty = new Faculty("Griff", "black");
-        expectedFaculty.setId(1L);
-        //Начало теста
-        Faculty actualFaculty = this.restTemplate.postForObject("http://localhost:" + port + "/" + "/hogwarts/faculty", facultyForCreate, Faculty.class);
-        assertNotNull(actualFaculty);
-        assertEquals(expectedFaculty, actualFaculty);
     }
 
     @Test

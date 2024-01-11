@@ -22,8 +22,7 @@ public class StudentService {
         Student newStudent = new Student();
         newStudent.setName(name);
         newStudent.setAge(age);
-        studentRepository.save(newStudent);
-        return newStudent;
+        return studentRepository.save(newStudent);
     }
 
     public Student findStudent(long id) {

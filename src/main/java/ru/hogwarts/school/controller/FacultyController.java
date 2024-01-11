@@ -35,7 +35,7 @@ public class FacultyController {
 
     @PostMapping
     public Faculty addFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+        return facultyService.createFaculty(faculty.getName(), faculty.getColor());
     }
 
     @PutMapping
@@ -44,7 +44,7 @@ public class FacultyController {
         if (foundFaculty == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.editFaculty(faculty));
+        return ResponseEntity.ok(facultyService.editFaculty(faculty.getId(), faculty.getName(), faculty.getColor()));
     }
 
     @DeleteMapping("{id}")

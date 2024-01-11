@@ -19,16 +19,22 @@ public class FacultyService {
     }
 
 
-    public Faculty createFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+    public Faculty createFaculty(String name, String color) {
+        Faculty newFaculty = new Faculty();
+        newFaculty.setName(name);
+        newFaculty.setColor(color);
+        return facultyRepository.save(newFaculty);
     }
 
     public Faculty findFaculty(long id) {
         return facultyRepository.findById(id).orElse(null);
     }
 
-    public Faculty editFaculty(Faculty faculty) {
-        return facultyRepository.save(faculty);
+    public Faculty editFaculty(Long id, String name, String color) {
+        Faculty facultyForEdit = findFaculty(id);
+        facultyForEdit.setName(name);
+        facultyForEdit.setColor(color);
+        return facultyRepository.save(facultyForEdit);
     }
 
     public void removeFaculty(long id) {

@@ -1,11 +1,17 @@
 package ru.hogwarts.school.controller;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.model.Faculty;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +46,7 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
-    void getFacultyInfo() {
+    void getFacultyInfo_success() {
         //Подготовка входных данных
         Faculty facultyForCreate = new Faculty("Griff", "black");
         //Подготовка ожидаемого результата
@@ -53,11 +59,7 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
-    void getFaculties() {
-    }
-
-    @Test
-    void editFaculty() {
+    void editFaculty_success() {
         //Подготовка входных данных
         Faculty facultyForCreate = new Faculty("Griff", "black");
         //Подготовка ожидаемого результата
@@ -73,7 +75,7 @@ class FacultyControllerRestTemplateTest {
     }
 
     @Test
-    void removeFaculty() {
+    void removeFaculty_success() {
         //Подготовка входных данных
         Faculty facultyForCreate = new Faculty("Griff", "black");
         //Подготовка ожидаемого результата
@@ -87,11 +89,28 @@ class FacultyControllerRestTemplateTest {
         assertNull(actualFaculty);
     }
 
+//    @Test
+//    void getFaculties_success() {
+//        //Подготовка входных данных
+//        Faculty facultyForCreate = new Faculty("Griff", "black");
+//        Faculty facultyForCreate2 = new Faculty("Sliz", "White");
+//        //Подготовка ожидаемого результата
+//        Faculty postedFaculty = this.restTemplate.postForObject("http://localhost:" + port + "/" + "/hogwarts/faculty", facultyForCreate, Faculty.class);
+//        Faculty postedFaculty2 = this.restTemplate.postForObject("http://localhost:" + port + "/" + "/hogwarts/faculty", facultyForCreate2, Faculty.class);
+//        Collection<Faculty> expectedCollection = new ArrayList<>();
+//        expectedCollection.add(postedFaculty);
+//        expectedCollection.add(postedFaculty2);
+//        //Начало теста
+//        List <Faculty> actualCollection = this.restTemplate.getForObject("http://localhost:" + port + "/" + "/hogwarts/faculty", List.class);
+//        assertNotNull(actualCollection);
+//        assertEquals(expectedCollection, actualCollection);
+//    }
+
     @Test
-    void getFacultyByColor() {
+    void getFacultyByColor_success() {
     }
 
     @Test
-    void getStudentsOfFaculty() {
+    void getStudentsOfFaculty_success() {
     }
 }

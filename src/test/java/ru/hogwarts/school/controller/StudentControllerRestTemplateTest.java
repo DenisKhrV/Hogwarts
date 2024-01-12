@@ -123,7 +123,7 @@ class StudentControllerRestTemplateTest {
     @Test
     void getStudentFaculty_success() {
         //Подготовка входных данных
-        Student studentForCreate = new Student("Ivan", 15);
+        Student studentForCreate = new Student("Stepan", 15);
         Faculty expectedFaculty = new Faculty("Stone", "grey");
         //Подготовка ожидаемого результата
         Student postedStudent = this.restTemplate.postForObject("http://localhost:" + port + "/hogwarts/student", studentForCreate, Student.class);
@@ -131,8 +131,9 @@ class StudentControllerRestTemplateTest {
         expectedFaculty.setId(postedFaculty.getId());
         postedStudent.setFaculty(postedFaculty);
         this.restTemplate.put("http://localhost:" + port + "/hogwarts/student", postedStudent, Student.class);
+        String studentName = postedStudent.getName();
         //Начало теста
-        Faculty actualFaculty = this.restTemplate.getForObject("http://localhost:" + port + "/hogwarts/student/faculty?name=Ivan", Faculty.class);
+        Faculty actualFaculty = this.restTemplate.getForObject("http://localhost:" + port + "/hogwarts/student/faculty?name="+studentName, Faculty.class);
         assertNotNull(actualFaculty);
         assertEquals(expectedFaculty, actualFaculty);
     }

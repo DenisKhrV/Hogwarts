@@ -16,6 +16,10 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -151,16 +155,101 @@ class StudentControllerWebMvcTest {
     }
 
     @Test
-    void getStudentsByAge_success() {
+    void getStudentsByAge_success() throws Exception {
+        //Подготовка ожидаемого результата
+        String name = "Ivan";
+        int age = 25;
+        long id = 1L;
+        Student student = new Student(name, age);
+        student.setId(id);
+
+        String name2 = "Petr";
+        int age2 = 25;
+        long id2 = 2L;
+        Student student2 = new Student(name2, age2);
+        student2.setId(id2);
+
+        Collection<Student> collection = new ArrayList<>(List.of(student, student2));
+
+        when(studentService.filterByAge(25)).thenReturn(collection);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student")
+                        .param("age", "25"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(student.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(student.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(student.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(student2.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(student2.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(student2.getAge()))
+                .andReturn();
+
     }
 
     @Test
-    void getStudentsAll_success() {
+    void getStudentsAll_success() throws Exception {
+        //Подготовка ожидаемого результата
+        String name = "Ivan";
+        int age = 25;
+        long id = 1L;
+        Student student = new Student(name, age);
+        student.setId(id);
+
+        String name2 = "Petr";
+        int age2 = 19;
+        long id2 = 2L;
+        Student student2 = new Student(name2, age2);
+        student2.setId(id2);
+
+        Collection<Student> collection = new ArrayList<>(List.of(student, student2));
+
+        when(studentService.getAll()).thenReturn(collection);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student")
+                )
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(student.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(student.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(student.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(student2.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(student2.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(student2.getAge()))
+                .andReturn();
     }
 
     @Test
-    void getStudentsBetweenAge_success() {
-    }
+    void getStudentsBetweenAge_success() throws Exception {
+            //Подготовка ожидаемого результата
+            String name = "Ivan";
+            int age = 25;
+            long id = 1L;
+            Student student = new Student(name, age);
+            student.setId(id);
 
+            String name2 = "Petr";
+            int age2 = 19;
+            long id2 = 2L;
+            Student student2 = new Student(name2, age2);
+            student2.setId(id2);
 
+            Collection<Student> collection = new ArrayList<>(List.of(student, student2));
+
+            when(studentService.findByAgeBetween(15, 25)).thenReturn(collection);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .get("/student")
+                            .param("min", "15")
+                            .param("max", "25")
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(student.getId()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(student.getName()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(student.getAge()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(student2.getId()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(student2.getName()))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(student2.getAge()))
+                    .andReturn();
+        }
 }

@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repositories.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
@@ -36,8 +37,8 @@ class FacultyControllerWebMvcTest {
     private MockMvc mockMvc;
     //    @MockBean
     //    private FacultyRepository facultyRepository;
-    //    @MockBean
-    //    private StudentService studentService;
+//    @MockBean
+//    private StudentService studentService;
     @MockBean
     private FacultyService facultyService;
     @InjectMocks
@@ -147,11 +148,11 @@ class FacultyControllerWebMvcTest {
         Faculty faculty= new Faculty(name, color);
         faculty.setId(id);
 
-        String name2 = "Gryffindor";
-        String color2 = "red";
+        String name2 = "Slytherin";
+        String color2 = "green";
         long id2 = 2L;
-        Faculty faculty2 = new Faculty(name, color);
-        faculty2.setId(id);
+        Faculty faculty2 = new Faculty(name2, color2);
+        faculty2.setId(id2);
 
         Collection<Faculty> collection = new ArrayList<>(List.of(faculty, faculty2));
 
@@ -162,18 +163,103 @@ class FacultyControllerWebMvcTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty"))
                 .andExpect(status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(faculty.getName()))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.color").value(faculty.getColor()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").value(faculty.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].color").value(faculty.getColor()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(id2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].name").value(faculty2.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].color").value(faculty2.getColor()))
+                .andReturn();
+    }
+
+    @Test
+    void getFacultyByColor_success() throws Exception {
+        //Подготовка входных данных
+        String name = "Gryffindor";
+        String color = "red";
+        long id = 1L;
+        Faculty faculty= new Faculty(name, color);
+        faculty.setId(id);
+
+        String name3 = "Test";
+        String color3 = "red";
+        long id3 = 3L;
+        Faculty faculty3= new Faculty(name3, color3);
+        faculty3.setId(id3);
+
+        Collection<Faculty> collection2 = new ArrayList<>(List.of(faculty, faculty3));
+
+        when(facultyService.filterByColor("red")).thenReturn(collection2);
+
+        //Начало теста
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty")
+                        .param("color", "red"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").value(faculty.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].color").value(faculty.getColor()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(id3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].name").value(faculty3.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].color").value(faculty3.getColor()))
+                .andReturn();
+    }
+
+    @Test
+    void getFacultiesWithParam_success() throws Exception {
+        //Подготовка ожидаемого результата
+        String name = "Gryffindor";
+        String color = "red";
+        long id = 1L;
+        Faculty facultyForCreate = new Faculty(name, color);
+        facultyForCreate.setId(id);
+
+        String nameOrColor = "Gryffindor";
+
+        Collection<Faculty> collection = new ArrayList<>(List.of(facultyForCreate));
+
+        when(facultyService.findByNameOrColor(nameOrColor)).thenReturn(collection);
+        //Начало теста
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty")
+                        .param("nameOrColor", "Gryffindor"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").value(facultyForCreate.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].color").value(facultyForCreate.getColor()))
                 .andReturn();
 
     }
-
     @Test
-    void getFacultyByColor_success() {
-    }
+    void getStudentsOfFaculty_success() throws Exception {
+        //Подготовка ожидаемого результата
+        String name = "Gryffindor";
+        String color = "red";
+        long id = 1L;
+        Faculty faculty = new Faculty(name, color);
+        faculty.setId(id);
 
-    @Test
-    void getStudentsOfFaculty_success() {
+        String studentName = "Harry";
+        int studentAge = 15;
+        Student student = new Student(studentName, studentAge);
+        student.setId(1L);
+        student.setFaculty(faculty);
+
+        Collection<Student> students = new ArrayList<>(List.of(student));
+
+        when(facultyService.getStudentsOfFaculty(name)).thenReturn(students);
+
+        //Начало теста
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/students")
+                        .param("facultyName", "Gryffindor"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").value(student.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].age").value(student.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].faculty.id").value(faculty.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].faculty.name").value(faculty.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].faculty.color").value(faculty.getColor()))
+                .andReturn();
     }
 }

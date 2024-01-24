@@ -10,7 +10,6 @@ import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +31,7 @@ public class StudentService {
     }
 
     public Student findStudent(long id) {
-        logger.info("Was invoked method for find student");
+//        logger.info("Was invoked method for find student");
         return studentRepository.findById(id).orElse(null);
     }
 
@@ -111,5 +110,43 @@ public class StudentService {
                 .mapToInt(Student::getAge)
                 .average()
                 .orElse(-1);
+    }
+
+    public void printStudentsName() {
+        List<Student> students = studentRepository.findAll();
+        System.out.println();
+        System.out.println(students.get(0).getName());
+        System.out.println(students.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(students.get(2).getName());
+            System.out.println(students.get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(students.get(4).getName());
+            System.out.println(students.get(5).getName());
+        }).start();
+    }
+
+    public void printStudentsNameSynchronized() {
+        List<Student> students = studentRepository.findAll();
+        System.out.println();
+        printName(students.get(0));
+        printName(students.get(1));
+
+        new Thread(() -> {
+            printName(students.get(2));
+            printName(students.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printName(students.get(4));
+            printName(students.get(5));
+        }).start();
+    }
+
+    private synchronized void printName(Student student) {
+        System.out.println(student.getName());
     }
 }

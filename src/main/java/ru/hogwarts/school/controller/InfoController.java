@@ -33,7 +33,7 @@ public class InfoController {
         long finish = System.currentTimeMillis();
         logger.info("result: {}, execution time: {}", sum, finish - start);
     }
-    @GetMapping("/sum")
+    @GetMapping("/sum/parallel")
     public void getSumParallel() {
         long start = System.currentTimeMillis();
         int sum = Stream.iterate(1, a -> a + 1)
